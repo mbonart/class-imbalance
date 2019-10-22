@@ -1,0 +1,28 @@
+.reveal h1 {
+    font-size: 2em;
+}
+
+#noborder img {
+    background:none; 
+    border:none; 
+    box-shadow:none;
+}
+
+.smallfont{
+    font-size: 50%;
+    text-align: right;
+}
+
+#image{
+    height:300px;
+    width:100%;
+}
+
+.reveal h3 {
+    font-size: 1.2em;
+    color: lightgray;
+}
+
+.smalltable {
+    font-size: 80%;
+}

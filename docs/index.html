@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Malte Bonart">
+  <meta name="dcterms.date" content="2019-10-25">
+  <title>Strategies for dealing with high class imbalance</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://revealjs.com/css/reset.css">
+  <link rel="stylesheet" href="https://revealjs.com/css/reveal.css">
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="https://revealjs.com/css/theme/night.css" id="theme">
+  <link rel="stylesheet" href="www/custom.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https://revealjs.com/css/print/pdf.css' : 'https://revealjs.com/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="https://revealjs.com/lib/js/html5shiv.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Strategies for dealing with high class imbalance</h1>
+  <p class="subtitle"><i class="fas fa-chart-pie"></i></p>
+  <p class="author">Malte Bonart</p>
+  <p class="date">October 25, 2019</p>
+</section>
+
+<section class="slide level3">
+
+<div class="smallfont">
+<p>
+This work and the underlying source code is available on <a href="https://github.com/bonartm/class-imbalance"> <i class="fab fa-github-square"></i>GitHub</a>.
+</p>
+<p>
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /></p>
+</div>
+</section>
+<section id="example---credit-card-fraud-detection" class="slide level3">
+<h3>Example - credit card fraud detection</h3>
+<iframe scrolling="no" style="border:none;" seamless="seamless" data-src="figures/age.html" height="450" width="100%">
+</iframe>
+<div class="smallfont">
+<p>Only</p>
+</div>
+</section>
+<section id="challenges-when-dealing-with-high-class-imbalance" class="slide level3">
+<h3>Challenges when dealing with high class imbalance</h3>
+</section>
+<section id="goals-of-this-session" class="slide level3">
+<h3>Goals of this session</h3>
+</section>
+<section id="organization" class="slide level3">
+<h3>Organization</h3>
+</section>
+<section id="confusion-matrix" class="slide level3">
+<h3>Confusion matrix</h3>
+<table>
+<thead>
+<tr class="header">
+<th> </th>
+<th> </th>
+<th>Reality</th>
+<th> </th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td> </td>
+<td> </td>
+<td>1</td>
+<td>0</td>
+<td> </td>
+</tr>
+<tr class="even">
+<td>Model</td>
+<td>1</td>
+<td>True positive TP</td>
+<td>False positive FP</td>
+<td> </td>
+</tr>
+<tr class="odd">
+<td> </td>
+<td>0</td>
+<td>False negative FN</td>
+<td>True negative TN</td>
+<td> </td>
+</tr>
+<tr class="even">
+<td> </td>
+<td> </td>
+<td><span class="math inline">\(n_1\)</span></td>
+<td><span class="math inline">\(n_0\)</span></td>
+<td>n</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Recall: <span class="math inline">\(\frac{TP}{TP+FN}\)</span></li>
+<li>Precision: <span class="math inline">\(\frac{TP}{TP+FP}\)</span></li>
+<li>Sensitivity: $</li>
+</ul>
+</section>
+<section id="quiz---simple-baselines-for-the-credit-card-challenge" class="slide level3">
+<h3>Quiz - Simple baselines for the credit card challenge</h3>
+<p>What’s the accuracy recall, precision, sensitivity, f1 score and balanced accuracy for a predictor that:</p>
+<ul>
+<li>only predicts <span class="math inline">\(1\)</span></li>
+<li>only predicts <span class="math inline">\(0\)</span></li>
+<li>predicts <span class="math inline">\(1\)</span> with probability of</li>
+</ul>
+</section>
+<section id="simple-baselines-for-the-credit-card-challenge" class="slide level3">
+<h3>Simple baselines for the credit card challenge</h3>
+<table>
+<thead>
+<tr class="header">
+<th>only <span class="math inline">\(1\)</span></th>
+<th>only <span class="math inline">\(0\)</span></th>
+<th><span class="math inline">\(P(\hat{y}=1) = 0.0018\)</span></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>accuracy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>precision</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>recall</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>sensitivity</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>f1 score</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>balanced accuracy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="varying-the-treshold" class="slide level3">
+<h3>Varying the treshold</h3>
+</section>
+<section id="class_weight-parameter-for-lr-and-rf" class="slide level3">
+<h3><code>class_weight</code> parameter for LR and RF</h3>
+</section>
+<section id="whats-next" class="slide level3">
+<h3>What’s next?</h3>
+</section>
+    </div>
+  </div>
+
+  <script src="https://revealjs.com/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'https://revealjs.com/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'https://revealjs.com/plugin/zoom-js/zoom.js', async: true },
+          { src: 'https://revealjs.com/plugin/math/math.js', async: true },
+          { src: 'https://revealjs.com/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
