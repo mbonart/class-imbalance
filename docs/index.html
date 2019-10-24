@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc">
   <meta name="author" content="Malte Bonart">
   <meta name="dcterms.date" content="2019-10-25">
-  <title>Strategies for dealing with high class imbalance</title>
+  <title>Evaluation of binary classifiers under high class imbalance</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -16,6 +16,74 @@
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #232629;
+    color: #7a7c7d;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+div.sourceCode
+  { color: #cfcfc2; background-color: #232629; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #cfcfc2; } /* Normal */
+code span.al { color: #95da4c; } /* Alert */
+code span.an { color: #3f8058; } /* Annotation */
+code span.at { color: #2980b9; } /* Attribute */
+code span.bn { color: #f67400; } /* BaseN */
+code span.bu { color: #7f8c8d; } /* BuiltIn */
+code span.cf { color: #fdbc4b; } /* ControlFlow */
+code span.ch { color: #3daee9; } /* Char */
+code span.cn { color: #27aeae; } /* Constant */
+code span.co { color: #7a7c7d; } /* Comment */
+code span.cv { color: #7f8c8d; } /* CommentVar */
+code span.do { color: #a43340; } /* Documentation */
+code span.dt { color: #2980b9; } /* DataType */
+code span.dv { color: #f67400; } /* DecVal */
+code span.er { color: #da4453; } /* Error */
+code span.ex { color: #0099ff; } /* Extension */
+code span.fl { color: #f67400; } /* Float */
+code span.fu { color: #8e44ad; } /* Function */
+code span.im { color: #27ae60; } /* Import */
+code span.in { color: #c45b00; } /* Information */
+code span.kw { color: #cfcfc2; } /* Keyword */
+code span.op { color: #cfcfc2; } /* Operator */
+code span.ot { color: #27ae60; } /* Other */
+code span.pp { color: #27ae60; } /* Preprocessor */
+code span.re { color: #2980b9; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #da4453; } /* SpecialString */
+code span.st { color: #f44f4f; } /* String */
+code span.va { color: #27aeae; } /* Variable */
+code span.vs { color: #da4453; } /* VerbatimString */
+code span.wa { color: #da4453; } /* Warning */
   </style>
   <link rel="stylesheet" href="https://revealjs.com/css/theme/night.css" id="theme">
   <link rel="stylesheet" href="www/custom.css"/>
@@ -37,17 +105,18 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Strategies for dealing with high class imbalance</h1>
-  <p class="subtitle"><i class="fas fa-chart-pie"></i></p>
+  <h1 class="title">Evaluation of binary classifiers under high class imbalance</h1>
+  <p class="subtitle">malte@bonart.de</p>
   <p class="author">Malte Bonart</p>
   <p class="date">October 25, 2019</p>
 </section>
 
-<section class="slide level3">
-
+<section id="evaluation-of-binary-classifiers-under-high-class-imbalance" class="slide level3">
+<h3>Evaluation of binary classifiers under high class imbalance</h3>
 <div class="smallfont">
+<p>Under high class imbalance it is crucial to select proper evaluation metrics that both reflect the asymmetry and match with your classification goal. In this lesson we will explore various evaluation metrics, compare our model to simple baselines and take a closer look at the trade-off between precision and recall.</p>
 <p>
-This work and the underlying source code is available on <a href="https://github.com/bonartm/class-imbalance"> <i class="fab fa-github-square"></i>GitHub</a>.
+This work and the underlying source code is available on <a href="https://github.com/mbonart/class-imbalance"> <i class="fab fa-github-square"></i>GitHub</a>.
 </p>
 <p>
 This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
@@ -55,141 +124,76 @@ This work is licensed under a <a rel="license" href="http://creativecommons.org/
 <p><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /></p>
 </div>
 </section>
-<section id="example---credit-card-fraud-detection" class="slide level3">
-<h3>Example - credit card fraud detection</h3>
-<iframe scrolling="no" style="border:none;" seamless="seamless" data-src="figures/age.html" height="450" width="100%">
-</iframe>
-<div class="smallfont">
-<p>Only</p>
-</div>
-</section>
-<section id="challenges-when-dealing-with-high-class-imbalance" class="slide level3">
-<h3>Challenges when dealing with high class imbalance</h3>
-</section>
-<section id="goals-of-this-session" class="slide level3">
-<h3>Goals of this session</h3>
-</section>
-<section id="organization" class="slide level3">
-<h3>Organization</h3>
-</section>
-<section id="confusion-matrix" class="slide level3">
-<h3>Confusion matrix</h3>
-<table>
-<thead>
-<tr class="header">
-<th> </th>
-<th> </th>
-<th>Reality</th>
-<th> </th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td> </td>
-<td> </td>
-<td>1</td>
-<td>0</td>
-<td> </td>
-</tr>
-<tr class="even">
-<td>Model</td>
-<td>1</td>
-<td>True positive TP</td>
-<td>False positive FP</td>
-<td> </td>
-</tr>
-<tr class="odd">
-<td> </td>
-<td>0</td>
-<td>False negative FN</td>
-<td>True negative TN</td>
-<td> </td>
-</tr>
-<tr class="even">
-<td> </td>
-<td> </td>
-<td><span class="math inline">\(n_1\)</span></td>
-<td><span class="math inline">\(n_0\)</span></td>
-<td>n</td>
-</tr>
-</tbody>
-</table>
+<section id="goals" class="slide level3">
+<h3>Goals</h3>
 <ul>
-<li>Recall: <span class="math inline">\(\frac{TP}{TP+FN}\)</span></li>
-<li>Precision: <span class="math inline">\(\frac{TP}{TP+FP}\)</span></li>
-<li>Sensitivity: $</li>
+<li>given a confusion matrix, calculate the accuracy, precision, recall and f1 score</li>
+<li>vary the threshold of the classification rule and examine the effect on precision and recall</li>
+<li>describe possible classification goals and how they are related to the trade-off between precision and recall</li>
 </ul>
 </section>
-<section id="quiz---simple-baselines-for-the-credit-card-challenge" class="slide level3">
-<h3>Quiz - Simple baselines for the credit card challenge</h3>
-<p>What’s the accuracy recall, precision, sensitivity, f1 score and balanced accuracy for a predictor that:</p>
+<section id="section" class="slide level3" data-background-iframe="https://www.kaggle.com/mlg-ulb/creditcardfraud/data">
+<h3></h3>
+</section>
+<section id="write-one-keyword-on-a-card" class="slide level3">
+<h3>Write one keyword on a card</h3>
 <ul>
-<li>only predicts <span class="math inline">\(1\)</span></li>
-<li>only predicts <span class="math inline">\(0\)</span></li>
-<li>predicts <span class="math inline">\(1\)</span> with probability of</li>
+<li>Which real-world problems contain imbalanced classes?</li>
+<li>What methods did you already use when confronted with high class imbalance?</li>
+<li>For binary classification, which evaluation metrics do you know?</li>
 </ul>
 </section>
-<section id="simple-baselines-for-the-credit-card-challenge" class="slide level3">
-<h3>Simple baselines for the credit card challenge</h3>
-<table>
-<thead>
-<tr class="header">
-<th>only <span class="math inline">\(1\)</span></th>
-<th>only <span class="math inline">\(0\)</span></th>
-<th><span class="math inline">\(P(\hat{y}=1) = 0.0018\)</span></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>accuracy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>precision</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>recall</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>sensitivity</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>f1 score</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>balanced accuracy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="lets-start" class="slide level3">
+<h3>Let’s start</h3>
+<ol type="1">
+<li>Clone the repository</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">git</span> clone https://github.com/mbonart/class-imbalance.git</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">cd</span> class-imbalance</span></code></pre></div>
+<ol start="2" type="1">
+<li>Download the data</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">python</span> src/download_data.py</span></code></pre></div>
+<ol start="3" type="1">
+<li>Have a look at the script and run</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">python</span> src/threshold.py</span></code></pre></div>
+<blockquote>
+<p>What is the result of the script?</p>
+</blockquote>
 </section>
-<section id="varying-the-treshold" class="slide level3">
-<h3>Varying the treshold</h3>
+<section id="classification-rule" class="slide level3">
+<h3>Classification rule</h3>
+<p><span class="math display">\[
+G(f(x_i)) = \mathbf{I}(f(x_i) &gt; b)
+\]</span></p>
 </section>
-<section id="class_weight-parameter-for-lr-and-rf" class="slide level3">
-<h3><code>class_weight</code> parameter for LR and RF</h3>
+<section id="group-work" class="slide level3">
+<h3>Group work</h3>
+<ul>
+<li>examine the precision, recall and f1 score for different thresholds <span class="math inline">\(b\)</span></li>
+<li>use the script <code>src/threshold.py</code></li>
+<li>write your results on cards</li>
+</ul>
 </section>
-<section id="whats-next" class="slide level3">
-<h3>What’s next?</h3>
+<section id="section-1" class="slide level3" data-background-iframe="www/precision-recall-curve.html">
+<h3></h3>
 </section>
+<section id="imbalanced_learn-package-for-advanced-sampling-strategies" class="slide level3">
+<h3><a href="https://imbalanced-learn.org/en/stable">‘imbalanced_learn’ package</a> for advanced sampling strategies</h3>
+<ul>
+<li>Oversampling: Random, <a href="https://imbalanced-learn.readthedocs.io/en/stable/generated/imblearn.over_sampling.SMOTE.html">SMOTE</a></li>
+<li>Undersampling: Random, <a href="https://imbalanced-learn.readthedocs.io/en/stable/generated/imblearn.under_sampling.TomekLinks.html">Tomeklinks</a></li>
+<li><a href="https://imbalanced-learn.readthedocs.io/en/stable/api.html#module-imblearn.combine">Combinations</a></li>
+</ul>
+</section>
+<section id="outlier-detection" class="title-slide slide level2"><h2>Outlier detection?</h2><ul>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html">OnceClassSVM</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html">LocalOutlierFactor</a></li>
+</ul></section>
+<section id="what-do-you-think" class="title-slide slide level2"><h2>What do you think?</h2><blockquote>
+<p>“Hey, look at my awesome classifiers, it achieves almost 99% accuracy?”</p>
+</blockquote></section>
     </div>
   </div>
 

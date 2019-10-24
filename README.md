@@ -1,11 +1,24 @@
-# srategies for dealing with imbalanced data
+# Evaluation of binary classifiers under high class imbalance
 
+## Data - Credit Card Fraud Detection
+
+Anonymized credit card transactions labeled as fraudulent or genuine
+
+> The datasets contains transactions made by credit cards in September 2013 by european cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions. The dataset is highly unbalanced, the positive class (frauds) account for 0.172% of all transactions. It contains only numerical input variables which are the result of a PCA transformatios [...]
+
+please see the original [kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud/data) page for details and author info
 
 ## Getting Started
 
 clone this repository
 ```
 git clone https://github.com/mbonart/class-imbalance.git
+```
+
+download the dataset into the `data` folder
+
+```
+python src/download_data.py
 ```
 
 
