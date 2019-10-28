@@ -37,15 +37,15 @@ for idx, clf in enumerate(clfs):
     scores = clf.predict_proba(X_test)
     prec, rec, thresholds = metrics.precision_recall_curve(y_test, scores[:,1])
     fig.add_trace(go.Scatter(
-        x=prec, y=rec, 
+        x=rec, y=prec, 
         name=names[idx],
         mode='lines',
         text=[f"Treshold: {t}" for t in thresholds]))
 
 fig.update_layout(
     title='Precision-recall curve for LR - Credit Card Fraud',
-    xaxis_title='Precision',
-    yaxis_title='Recall',
+    xaxis_title='Recall',
+    yaxis_title='Precision',
     template='presentation+plotly_dark')
 
 plotly.offline.plot(fig, filename='docs/www/precision-recall-curve.html') 

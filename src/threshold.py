@@ -33,7 +33,7 @@ est_proba = clf.predict_proba(X_test)[:,1]
 # chose a threshold and print the confusion matrix
 
 threshold = 0.5
-y_pred = est_proba > 0.5
+y_pred = est_proba >threshold
 
 conf_mat = metrics.confusion_matrix(y_pred, y_test, labels=[1,0])
 print(conf_mat)
